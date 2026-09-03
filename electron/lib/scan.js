@@ -25,11 +25,16 @@ const SIDECAR_EXTS = new Set(['.xml', '.srt', '.thm', '.cpi', '.bim']);
 const SIDECAR_SUFFIX = /^(.+?)M\d{2}$/i;
 
 /**
- * Proxy and helper files cameras drop next to the real clip. DJI writes an
- * .LRV low-res proxy for every .MP4; importing those doubles the file count
- * for no benefit, so they are skipped unless the user opts in.
+ * Proxy files cameras drop next to the real clip. DJI writes a low-res proxy
+ * for every .MP4 — .LRV on older bodies, .LRF on current drones and the Osmo
+ * line — and importing those doubles the file count for no benefit, so they
+ * are never treated as clips.
+ *
+ * Both are ordinary video containers, so they must be named here rather than
+ * left to fall out of VIDEO_EXTS by omission: anything that treats a proxy as
+ * a clip would import it as a second, quarter-resolution copy of the take.
  */
-const PROXY_EXTS = new Set(['.lrv']);
+const PROXY_EXTS = new Set(['.lrv', '.lrf']);
 
 /** Directories that are never worth walking on a card or a Mac volume. */
 const SKIP_DIRS = new Set([
@@ -44,7 +49,7 @@ const SKIP_DIRS = new Set([
  * `recursive` maps to the "Include subfolders" checkbox — cards keep clips
  * under DCIM/100MEDIA and similar, so it defaults on.
  */
-async function scanSource(sourceDir, { recursive = true, includeProxies = false } = {}) {
+async function scanSource(sourceDir, { recursive = true } = {}) {
   const videos = [];
   const sidecars = new Map(); // "dir\0basename" -> [{ ext, fullPath, size }]
 
@@ -79,7 +84,11 @@ async function scanSource(sourceDir, { recursive = true, includeProxies = false 
       const ext = rawExt.toLowerCase();
       const base = path.basename(entry.name, rawExt);
 
-      if (VIDEO_EXTS.has(ext) || (includeProxies && PROXY_EXTS.has(ext))) {
+      // Checked ahead of VIDEO_EXTS so a proxy stays excluded even if its
+      // container is ever listed as a clip format.
+      if (PROXY_EXTS.has(ext)) continue;
+
+      if (VIDEO_EXTS.has(ext)) {
         let stat;
         try {
           stat = await fs.stat(full);

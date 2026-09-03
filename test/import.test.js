@@ -44,8 +44,10 @@ async function makeCard() {
     }
   }
 
-  // Noise the scanner must ignore.
+  // Noise the scanner must ignore. DJI writes a low-res proxy beside every
+  // clip: .LRV on older bodies, .LRF on current ones.
   await fsp.writeFile(path.join(dir, 'DJI_0141.LRV'), 'proxy');
+  await fsp.writeFile(path.join(dir, 'DJI_0142.LRF'), 'proxy');
   await fsp.writeFile(path.join(dir, '.DS_Store'), 'x');
   await fsp.mkdir(path.join(root, '.Spotlight-V100'), { recursive: true });
   await fsp.writeFile(path.join(root, '.Spotlight-V100', 'IGNORE.MP4'), 'x');
@@ -80,13 +82,28 @@ test('scan finds only real videos, grouped by shoot date, with sidecars attached
   const card = await makeCard();
   const files = await scanSource(card, { recursive: true });
 
-  assert.equal(files.length, 7, 'LRV proxies, .DS_Store and .Spotlight-V100 are excluded');
+  assert.equal(files.length, 7, 'LRV/LRF proxies, .DS_Store and .Spotlight-V100 are excluded');
 
   const groups = [...new Set(files.map((f) => f.groupKey))];
   assert.deepEqual(groups, ['2026-09-03', '2026-09-02', '2026-08-30'], 'newest group first');
 
   const withXml = files.filter((f) => f.hasXml).map((f) => f.name).sort();
   assert.deepEqual(withXml, ['C0041.MP4', 'DJI_0141.MP4', 'DJI_0142.MP4', 'MVI_0231.MP4']);
+});
+
+test('DJI proxies are never mistaken for clips, in either spelling', async () => {
+  const card = await makeCard();
+  const files = await scanSource(card, { recursive: true });
+
+  assert.deepEqual(
+    files.filter((f) => ['.LRV', '.LRF'].includes(f.ext)).map((f) => f.name),
+    [],
+    'the old .LRV and the current .LRF are both excluded',
+  );
+  assert.ok(
+    files.some((f) => f.name === 'DJI_0142.MP4'),
+    'excluding the proxy does not take the clip with it',
+  );
 });
 
 test('scan without subfolders finds nothing at the card root', async () => {
