@@ -16,6 +16,15 @@ const VIDEO_EXTS = new Set([
 const SIDECAR_EXTS = new Set(['.xml', '.srt', '.thm', '.cpi', '.bim']);
 
 /**
+ * Suffixes a camera appends to a sidecar's basename.
+ *
+ * Sony writes C0001.MP4 alongside C0001M01.XML — the metadata file carries an
+ * "M<nn>" tag the clip does not, so an exact basename match finds nothing on
+ * the cards most likely to have XML at all.
+ */
+const SIDECAR_SUFFIX = /^(.+?)M\d{2}$/i;
+
+/**
  * Proxy and helper files cameras drop next to the real clip. DJI writes an
  * .LRV low-res proxy for every .MP4; importing those doubles the file count
  * for no benefit, so they are skipped unless the user opts in.
@@ -79,15 +88,26 @@ async function scanSource(sourceDir, { recursive = true, includeProxies = false 
         }
         videos.push({ fullPath: full, name: entry.name, base, ext, rawExt, stat });
       } else if (SIDECAR_EXTS.has(ext)) {
-        const key = `${dir}\0${base.toLowerCase()}`;
-        if (!sidecars.has(key)) sidecars.set(key, []);
         let size = 0;
         try {
           size = (await fs.stat(full)).size;
         } catch {
           continue;
         }
-        sidecars.get(key).push({ ext, rawExt, fullPath: full, name: entry.name, size });
+
+        // Indexed under its own basename and, when the camera tagged it, under
+        // the clip basename it belongs to, so the lookup below stays a single
+        // exact hit either way.
+        const lower = base.toLowerCase();
+        const tagged = SIDECAR_SUFFIX.exec(lower);
+        const bases = tagged ? [lower, tagged[1]] : [lower];
+        const record = { ext, rawExt, fullPath: full, name: entry.name, size };
+
+        for (const b of bases) {
+          const key = `${dir}\0${b}`;
+          if (!sidecars.has(key)) sidecars.set(key, []);
+          sidecars.get(key).push(record);
+        }
       }
     }
   }

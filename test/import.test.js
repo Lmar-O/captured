@@ -12,20 +12,26 @@ const { planImport, runImport } = require('../electron/lib/importer');
 const SRC_A = '/System/Library/CoreServices/BluetoothUIService.app/Contents/Resources/Banner-PID-8203-Case-mov/Banner-PID-8203-Case-Loop.mov';
 const SRC_B = '/System/Library/CoreServices/NotificationCenter.app/Contents/Resources/mac_widgets-edu_RTL_full.mov';
 
-/** A card with three shoot dates, XML sidecars, and a nested DCIM layout. */
+/**
+ * A card with three shoot dates, XML sidecars, and a nested DCIM layout.
+ *
+ * The sidecar column is the XML's own basename, not a flag — Sony tags its
+ * metadata file "C0041M01.XML" beside "C0041.MP4", so a fixture that only ever
+ * uses the clip's own name would miss the naming the scanner actually meets.
+ */
 async function makeCard() {
   const root = await fsp.mkdtemp(path.join(os.tmpdir(), 'captured-card-'));
   const dir = path.join(root, 'DCIM', '100MEDIA');
   await fsp.mkdir(dir, { recursive: true });
 
   const spec = [
-    ['DJI_0141', '2026-09-03', true, SRC_A],
-    ['DJI_0142', '2026-09-03', true, SRC_B],
-    ['DJI_0143', '2026-09-03', false, SRC_A],
-    ['MVI_0231', '2026-09-02', true, SRC_B],
-    ['MVI_0232', '2026-09-02', false, SRC_A],
-    ['C0041', '2026-08-30', true, SRC_B],
-    ['C0042', '2026-08-30', false, SRC_A],
+    ['DJI_0141', '2026-09-03', 'DJI_0141', SRC_A],
+    ['DJI_0142', '2026-09-03', 'DJI_0142', SRC_B],
+    ['DJI_0143', '2026-09-03', null, SRC_A],
+    ['MVI_0231', '2026-09-02', 'MVI_0231M01', SRC_B],
+    ['MVI_0232', '2026-09-02', null, SRC_A],
+    ['C0041', '2026-08-30', 'C0041M01', SRC_B],
+    ['C0042', '2026-08-30', null, SRC_A],
   ];
 
   for (const [name, date, xml, src] of spec) {
@@ -33,8 +39,8 @@ async function makeCard() {
     await fsp.copyFile(src, path.join(dir, `${name}.MP4`));
     await fsp.utimes(path.join(dir, `${name}.MP4`), stamp, stamp);
     if (xml) {
-      await fsp.writeFile(path.join(dir, `${name}.XML`), '<?xml version="1.0"?><meta/>');
-      await fsp.utimes(path.join(dir, `${name}.XML`), stamp, stamp);
+      await fsp.writeFile(path.join(dir, `${xml}.XML`), '<?xml version="1.0"?><meta/>');
+      await fsp.utimes(path.join(dir, `${xml}.XML`), stamp, stamp);
     }
   }
 
@@ -122,6 +128,10 @@ test('import reuses an existing dated folder and creates only the missing ones',
   assert.ok(listing.includes(path.join('2026', '2026-09-03', 'DJI_0141.MP4')));
   assert.ok(listing.includes(path.join('2026', '2026-09-03', 'DJI_0141.XML')), 'sidecar rode along');
   assert.ok(listing.includes(path.join('2026', '2026-08-30', 'C0041.MP4')));
+  assert.ok(
+    listing.includes(path.join('2026', '2026-08-30', 'C0041.XML')),
+    'a Sony C0041M01.XML lands beside its clip, named to match',
+  );
 });
 
 test('a second import of the same card flags every file as a duplicate', async () => {
