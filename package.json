@@ -18,12 +18,19 @@
   "build": {
     "appId": "com.captured.app",
     "productName": "Captured",
+    "copyright": "Copyright \u00a9 2026",
+    "directories": {
+      "buildResources": "build",
+      "output": "dist"
+    },
     "files": [
       "electron/**/*",
-      "renderer/**/*"
+      "renderer/**/*",
+      "package.json"
     ],
     "mac": {
       "category": "public.app-category.photography",
+      "icon": "build/icon.icns",
       "target": [
         {
           "target": "dmg",
@@ -31,7 +38,30 @@
             "arm64"
           ]
         }
-      ]
-    }
+      ],
+      "identity": null
+    },
+    "dmg": {
+      "title": "Captured",
+      "artifactName": "Captured-${version}-${arch}.dmg",
+      "contents": [
+        {
+          "x": 140,
+          "y": 200,
+          "type": "file"
+        },
+        {
+          "x": 400,
+          "y": 200,
+          "type": "link",
+          "path": "/Applications"
+        }
+      ],
+      "window": {
+        "width": 540,
+        "height": 400
+      }
+    },
+    "afterPack": "build/after-pack.js"
   }
 }
