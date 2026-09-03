@@ -7,7 +7,7 @@
   "private": true,
   "scripts": {
     "start": "electron .",
-    "dist": "electron-builder --mac",
+    "dist": "electron-builder --mac --publish never",
     "test": "node --test test/dates.test.js test/import.test.js",
     "preview": "node dev/build-preview.js && open dev/preview.html"
   },
