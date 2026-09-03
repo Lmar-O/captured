@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en" data-carbon-theme="white">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Content-Security-Policy"
+      content="default-src 'none'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' file: data:; media-src 'self' file:;">
+<title>Captured</title>
+<link rel="stylesheet" href="styles/tokens/fonts.css">
+<link rel="stylesheet" href="styles/tokens/colors.css">
+<link rel="stylesheet" href="styles/tokens/theme.css">
+<link rel="stylesheet" href="styles/tokens/typography.css">
+<link rel="stylesheet" href="styles/carbon.css">
+<link rel="stylesheet" href="styles/app.css">
+</head>
+<body>
+
+<div class="app">
+
+  <header class="titlebar">
+    <div class="titlebar__lights"></div>
+    <div class="titlebar__title">Import videos</div>
+    <div class="titlebar__actions">
+      <button type="button" class="cds-btn cds-btn--ghost cds-btn--sm cds-btn--compact" id="btn-rescan">Rescan</button>
+      <button type="button" class="cds-btn cds-btn--primary cds-btn--sm cds-btn--compact" id="btn-import" disabled>Import</button>
+    </div>
+  </header>
+
+  <div class="body">
+
+    <!-- Source ------------------------------------------------------- -->
+    <aside class="source">
+      <h2 class="rail-label">Source</h2>
+      <div id="volumes"></div>
+
+      <button type="button" class="cds-btn cds-btn--ghost cds-btn--sm cds-btn--compact" id="btn-browse-source"
+              style="padding-left:0">Choose folder…</button>
+
+      <div class="divider"></div>
+
+      <label class="cds-checkbox">
+        <input type="checkbox" id="opt-subfolders" checked>
+        <span class="cds-checkbox__box"></span>
+        <span class="cds-checkbox__label">Include subfolders</span>
+      </label>
+      <div class="helper">Scans DCIM and nested folders on the card</div>
+    </aside>
+
+    <!-- Files -------------------------------------------------------- -->
+    <section class="files">
+      <div class="files__toolbar">
+        <button type="button" class="cds-btn cds-btn--ghost cds-btn--sm cds-btn--compact" id="btn-select-all">Select all</button>
+        <button type="button" class="cds-btn cds-btn--ghost cds-btn--sm cds-btn--compact" id="btn-select-none">Select none</button>
+        <div class="files__count" id="selection-count">No source selected</div>
+        <div class="files__spacer"></div>
+        <span class="cds-tag cds-tag--blue">Videos only</span>
+      </div>
+      <div class="files__scroll" id="groups"></div>
+    </section>
+
+    <!-- Destination -------------------------------------------------- -->
+    <aside class="dest">
+      <h2 class="rail-label">Destination</h2>
+
+      <div class="cds-tile dest__tile">
+        <div class="dest__row">
+          <span id="dest-icon"></span>
+          <div class="dest__path" id="dest-path">—</div>
+          <button type="button" class="cds-btn cds-btn--ghost cds-btn--sm cds-btn--compact" id="btn-browse-dest">Change…</button>
+        </div>
+      </div>
+      <div class="dest__example" id="dest-example"></div>
+
+      <div class="divider divider--wide"></div>
+
+      <h3 class="section-title">Organize</h3>
+      <div class="dest__radios">
+        <label class="cds-radio">
+          <input type="radio" name="organize" id="organize-single">
+          <span class="cds-radio__circle"></span>
+          <span class="cds-radio__label">Into one folder</span>
+        </label>
+        <label class="cds-radio">
+          <input type="radio" name="organize" id="organize-date" checked>
+          <span class="cds-radio__circle"></span>
+          <span class="cds-radio__label">Into subfolders by date</span>
+        </label>
+      </div>
+
+      <div class="dest__format" id="format-wrap">
+        <label class="cds-field">
+          <span class="cds-field__label">Date format</span>
+          <span class="cds-field__select-wrap">
+            <select class="cds-field__select" id="date-format"></select>
+            <span class="cds-field__chevron" id="format-chevron"></span>
+          </span>
+        </label>
+        <div class="folders" id="folder-plan"></div>
+      </div>
+
+      <div class="divider divider--wide"></div>
+
+      <h3 class="section-title">File naming</h3>
+      <label class="cds-toggle">
+        <input type="checkbox" id="opt-rename">
+        <span class="cds-toggle__track"><span class="cds-toggle__knob"></span></span>
+        <span class="cds-toggle__label">Rename files during import</span>
+      </label>
+
+      <div class="dest__rename hidden" id="rename-wrap">
+        <label class="cds-field">
+          <span class="cds-field__label">Custom name</span>
+          <input type="text" class="cds-field__input" id="rename-base" placeholder="e.g. Japan">
+        </label>
+        <div class="dest__rename-helper" id="rename-helper"></div>
+      </div>
+      <div class="dest__note" id="rename-note">Files keep their original names.</div>
+
+      <div class="divider divider--wide"></div>
+
+      <h3 class="section-title">Options</h3>
+      <div class="dest__options">
+        <div>
+          <label class="cds-checkbox">
+            <input type="checkbox" id="opt-xml" checked>
+            <span class="cds-checkbox__box"></span>
+            <span class="cds-checkbox__label">Import XML files with matching names</span>
+          </label>
+          <div class="helper">e.g. DJI_0141.MP4 also imports DJI_0141.XML</div>
+        </div>
+        <div>
+          <label class="cds-checkbox">
+            <input type="checkbox" id="opt-skip-dupes" checked>
+            <span class="cds-checkbox__box"></span>
+            <span class="cds-checkbox__label">Skip suspected duplicates</span>
+          </label>
+          <div class="helper">Files that already exist in the destination</div>
+        </div>
+      </div>
+
+      <div class="divider divider--wide"></div>
+
+      <div class="cds-tile">
+        <div class="summary" id="summary"></div>
+      </div>
+    </aside>
+
+  </div>
+</div>
+
+<!-- Import progress / result ---------------------------------------- -->
+<div class="overlay hidden" id="overlay">
+  <div class="overlay__panel">
+    <h2 class="overlay__title" id="overlay-title">Importing</h2>
+    <div class="overlay__sub" id="overlay-sub"></div>
+
+    <div class="cds-progress__track" id="progress-track">
+      <div class="cds-progress__fill" id="progress-fill" style="width:0%"></div>
+    </div>
+    <div class="overlay__file" id="overlay-file"></div>
+    <div class="overlay__stats">
+      <span id="overlay-bytes"></span>
+      <span id="overlay-rate"></span>
+    </div>
+
+    <div class="overlay__list hidden" id="overlay-list"></div>
+
+    <div class="overlay__actions">
+      <button type="button" class="cds-btn cds-btn--ghost cds-btn--sm cds-btn--compact" id="btn-cancel-import">Cancel</button>
+      <button type="button" class="cds-btn cds-btn--primary cds-btn--sm cds-btn--compact hidden" id="btn-reveal">Show in Finder</button>
+      <button type="button" class="cds-btn cds-btn--ghost cds-btn--sm cds-btn--compact hidden" id="btn-done">Done</button>
+    </div>
+  </div>
+</div>
+
+<script src="icons.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

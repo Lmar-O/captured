@@ -1,0 +1,542 @@
+/* ============================================================
+   Captured — the Import screen.
+
+   Geometry follows the design file: 56px header, 260px source rail,
+   fluid file grid on layer-01, 340px destination rail.
+
+   Two things are deliberately different from the mockup. The mockup paints
+   its own traffic lights and window frame because it renders inside a
+   browser canvas; here the real window supplies both, so that block becomes
+   a drag region sized to keep the title optically centred. And the fixed
+   1440x900 frame becomes a resizable window — the rails hold their widths
+   and the grid takes the slack.
+   ============================================================ */
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  height: 100%;
+  overflow: hidden;
+}
+
+body {
+  background: var(--cds-background);
+  color: var(--cds-text-primary);
+  font-family: var(--cds-font-sans);
+}
+
+a { color: var(--cds-link-primary); }
+a:hover { color: var(--cds-link-primary-hover); }
+
+::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar-thumb { background: var(--cds-border-subtle-01); border-radius: 0; }
+::-webkit-scrollbar-track { background: transparent; }
+
+.app {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  background: var(--cds-background);
+  overflow: hidden;
+}
+
+/* ---- Header --------------------------------------------------------- */
+
+.titlebar {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  height: 56px;
+  padding: 0 16px;
+  border-bottom: 1px solid var(--cds-border-subtle-00);
+  background: var(--cds-layer-01);
+  -webkit-app-region: drag;
+}
+
+/* Matches the mockup's 220px traffic-light block; the system draws the
+   buttons into it via trafficLightPosition. */
+.titlebar__lights { width: 220px; flex-shrink: 0; }
+
+.titlebar__title {
+  flex: 1;
+  text-align: center;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--cds-text-primary);
+  letter-spacing: 0.16px;
+}
+
+.titlebar__actions {
+  width: 220px;
+  flex-shrink: 0;
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  -webkit-app-region: no-drag;
+}
+
+/* ---- Body ----------------------------------------------------------- */
+
+.body {
+  flex: 1;
+  display: flex;
+  min-height: 0;
+}
+
+.rail-label {
+  margin: 0 0 12px;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.32px;
+  text-transform: uppercase;
+  color: var(--cds-text-secondary);
+}
+
+.divider {
+  height: 1px;
+  background: var(--cds-border-subtle-00);
+  margin: 16px 0;
+}
+
+.divider--wide { margin: 20px 0; }
+
+.helper {
+  font-size: 12px;
+  color: var(--cds-text-helper);
+  margin: 6px 0 0 24px;
+  line-height: 1.4;
+}
+
+.section-title {
+  margin: 0 0 12px;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--cds-text-primary);
+}
+
+/* ---- Source rail ---------------------------------------------------- */
+
+.source {
+  width: 260px;
+  flex-shrink: 0;
+  border-right: 1px solid var(--cds-border-subtle-00);
+  padding: 20px;
+  overflow-y: auto;
+}
+
+.source__tile { margin-bottom: 8px; }
+
+.source__row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.source__meta {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.source__name {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--cds-text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.source__sub {
+  font-size: 12px;
+  color: var(--cds-text-secondary);
+}
+
+.source__tile--disabled .source__name { color: var(--cds-text-disabled); font-weight: 400; }
+
+.source__empty {
+  font-size: 13px;
+  color: var(--cds-text-helper);
+  line-height: 1.5;
+  padding: 4px 0 12px;
+}
+
+/* ---- File grid ------------------------------------------------------ */
+
+.files {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  background: var(--cds-layer-01);
+}
+
+.files__toolbar {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 14px 24px;
+  border-bottom: 1px solid var(--cds-border-subtle-00);
+}
+
+.files__count {
+  font-size: 13px;
+  color: var(--cds-text-secondary);
+}
+
+.files__spacer { flex: 1; }
+
+.files__scroll {
+  flex: 1;
+  overflow-y: auto;
+  padding: 20px 24px 32px;
+}
+
+.group { margin-bottom: 28px; }
+
+.group__header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.group__label {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--cds-text-primary);
+}
+
+.group__count {
+  font-size: 13px;
+  color: var(--cds-text-helper);
+}
+
+.group__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+  gap: 16px;
+}
+
+/* ---- File card ------------------------------------------------------ */
+
+.card {
+  position: relative;
+  border: 1px solid var(--cds-border-subtle-01);
+  background: var(--cds-layer-02);
+  cursor: pointer;
+}
+
+.card:focus-visible {
+  outline: 2px solid var(--cds-focus);
+  outline-offset: -2px;
+}
+
+.card__thumb {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+  background: var(--cds-layer-accent-01);
+}
+
+.card__thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* Until QuickLook returns a frame, the card carries the mockup's striped
+   placeholder — five hues so a grid of pending cards still reads as
+   distinct clips rather than one grey block. */
+.card__thumb--pending.hue-0 { background: repeating-linear-gradient(135deg, var(--cds-teal-20), var(--cds-teal-20) 10px, var(--cds-teal-30) 10px, var(--cds-teal-30) 20px); }
+.card__thumb--pending.hue-1 { background: repeating-linear-gradient(135deg, var(--cds-purple-20), var(--cds-purple-20) 10px, var(--cds-purple-30) 10px, var(--cds-purple-30) 20px); }
+.card__thumb--pending.hue-2 { background: repeating-linear-gradient(135deg, var(--cds-cyan-20), var(--cds-cyan-20) 10px, var(--cds-cyan-30) 10px, var(--cds-cyan-30) 20px); }
+.card__thumb--pending.hue-3 { background: repeating-linear-gradient(135deg, var(--cds-magenta-20), var(--cds-magenta-20) 10px, var(--cds-magenta-30) 10px, var(--cds-magenta-30) 20px); }
+.card__thumb--pending.hue-4 { background: repeating-linear-gradient(135deg, var(--cds-blue-20), var(--cds-blue-20) 10px, var(--cds-blue-30) 10px, var(--cds-blue-30) 20px); }
+
+.card__play {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.card__play::after {
+  content: '';
+  width: 0;
+  height: 0;
+  margin-left: 4px;
+  border-top: 8px solid transparent;
+  border-bottom: 8px solid transparent;
+  border-left: 12px solid rgba(255, 255, 255, 0.92);
+}
+
+.card__check {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  background: rgba(255, 255, 255, 0.85);
+  border-radius: 2px;
+  padding: 2px;
+  display: flex;
+}
+
+/* The chip is always white because it sits on footage, so the checkbox
+   inside it keeps the light-theme treatment in both themes — following
+   --cds-icon-primary would paint a near-white box on a near-white chip. */
+.card__check .cds-checkbox__box {
+  border-color: #161616;
+  background: transparent;
+}
+
+.card__check .cds-checkbox input:checked + .cds-checkbox__box,
+.card__check .cds-checkbox input:indeterminate + .cds-checkbox__box {
+  background: #161616;
+  border-color: #161616;
+}
+
+.card__check .cds-checkbox input:checked + .cds-checkbox__box::after {
+  border-color: #ffffff;
+}
+
+.card__check .cds-checkbox input:indeterminate + .cds-checkbox__box::after {
+  background: #ffffff;
+}
+
+.card__badge {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+}
+
+.card__caption {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 8px;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.78), rgba(0, 0, 0, 0));
+}
+
+.card__name-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+}
+
+.card__name {
+  font-size: 13px;
+  color: #fff;
+  font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.card__xml {
+  flex-shrink: 0;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+  color: var(--cds-teal-20);
+  background: rgba(0, 157, 154, 0.35);
+  border-radius: 2px;
+  padding: 2px 5px;
+}
+
+.card__meta {
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.75);
+  margin-top: 2px;
+}
+
+.card--deselected .card__thumb { opacity: 0.45; }
+
+/* ---- Destination rail ----------------------------------------------- */
+
+.dest {
+  width: 340px;
+  flex-shrink: 0;
+  border-left: 1px solid var(--cds-border-subtle-00);
+  padding: 20px;
+  overflow-y: auto;
+}
+
+.dest__tile { margin-bottom: 6px; }
+
+.dest__row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.dest__path {
+  flex: 1;
+  font-size: 14px;
+  color: var(--cds-text-primary);
+  min-width: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  direction: rtl;
+  text-align: left;
+}
+
+.dest__example {
+  font-size: 11px;
+  font-family: var(--cds-font-mono);
+  color: var(--cds-text-helper);
+  margin: 6px 0 0 2px;
+  word-break: break-all;
+}
+
+.dest__radios {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.dest__format {
+  margin-top: 12px;
+  margin-left: 24px;
+}
+
+.dest__rename { margin-top: 12px; }
+
+.dest__rename-helper {
+  font-size: 12px;
+  font-family: var(--cds-font-mono);
+  color: var(--cds-text-helper);
+  margin-top: 8px;
+  line-height: 1.5;
+}
+
+.dest__note {
+  font-size: 12px;
+  color: var(--cds-text-helper);
+  margin-top: 8px;
+}
+
+.dest__options {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.summary {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.summary__row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: var(--cds-text-secondary);
+}
+
+.summary__row--primary { color: var(--cds-text-primary); }
+.summary__row--warning .cds-icon { color: var(--cds-support-warning); }
+
+/* Which dated folders already exist and which this import would create —
+   the mockup's static summary tile, made to reflect the real destination. */
+.folders {
+  margin-top: 8px;
+  font-size: 12px;
+  font-family: var(--cds-font-mono);
+  color: var(--cds-text-helper);
+  line-height: 1.5;
+  word-break: break-all;
+}
+
+.folders__item { display: flex; gap: 6px; align-items: baseline; }
+.folders__flag { flex-shrink: 0; font-family: var(--cds-font-sans); font-weight: 600; }
+.folders__flag--reuse { color: var(--cds-support-success); }
+.folders__flag--new { color: var(--cds-text-secondary); }
+
+/* ---- Progress overlay ----------------------------------------------- */
+
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: var(--cds-overlay);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 50;
+}
+
+.overlay__panel {
+  width: 520px;
+  max-width: calc(100vw - 80px);
+  background: var(--cds-layer-01);
+  border: 1px solid var(--cds-border-subtle-01);
+  padding: 24px;
+}
+
+.overlay__title {
+  font-size: 20px;
+  font-weight: 400;
+  margin: 0 0 4px;
+  color: var(--cds-text-primary);
+}
+
+.overlay__sub {
+  font-size: 14px;
+  color: var(--cds-text-secondary);
+  margin-bottom: 20px;
+}
+
+.overlay__file {
+  font-size: 12px;
+  font-family: var(--cds-font-mono);
+  color: var(--cds-text-helper);
+  margin-top: 10px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.overlay__stats {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+  color: var(--cds-text-secondary);
+  margin-top: 8px;
+}
+
+.overlay__actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 24px;
+}
+
+.overlay__list {
+  max-height: 220px;
+  overflow-y: auto;
+  margin-top: 16px;
+  font-size: 12px;
+  font-family: var(--cds-font-mono);
+  color: var(--cds-text-secondary);
+  line-height: 1.6;
+}
+
+.overlay__error { color: var(--cds-text-error); }
+
+.hidden { display: none !important; }

@@ -1,0 +1,37 @@
+{
+  "name": "captured",
+  "productName": "Captured",
+  "version": "1.0.0",
+  "description": "Import video files from an SD card to your Mac.",
+  "main": "electron/main.js",
+  "private": true,
+  "scripts": {
+    "start": "electron .",
+    "dist": "electron-builder --mac",
+    "test": "node --test test/dates.test.js test/import.test.js",
+    "preview": "node dev/build-preview.js && open dev/preview.html"
+  },
+  "devDependencies": {
+    "electron": "^33.2.0",
+    "electron-builder": "^25.1.8"
+  },
+  "build": {
+    "appId": "com.captured.app",
+    "productName": "Captured",
+    "files": [
+      "electron/**/*",
+      "renderer/**/*"
+    ],
+    "mac": {
+      "category": "public.app-category.photography",
+      "target": [
+        {
+          "target": "dmg",
+          "arch": [
+            "arm64"
+          ]
+        }
+      ]
+    }
+  }
+}

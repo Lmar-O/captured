@@ -1,0 +1,441 @@
+/* ============================================================
+   Carbon components, as CSS.
+
+   The design imports these from the project's design-system bundle, which
+   builds them in React. Captured is a plain renderer, so each component is
+   reproduced here against the same tokens and the same geometry the bundle
+   specifies — Tile's 3px selected edge, the 16px checkbox and radio, the
+   32x16 small toggle, the single-bottom-border fields.
+   ============================================================ */
+
+.cds-icon {
+  display: block;
+  flex-shrink: 0;
+  fill: currentColor;
+}
+
+/* ---- Button -------------------------------------------------------- */
+
+.cds-btn {
+  box-sizing: border-box;
+  display: inline-flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 32px;
+  max-width: 320px;
+  padding: 0 16px;
+  border: 1px solid transparent;
+  border-radius: 0;
+  font-family: var(--cds-font-sans);
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 1.28572;
+  letter-spacing: 0.16px;
+  text-align: left;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background 70ms cubic-bezier(0, 0, 0.38, 0.9);
+}
+
+.cds-btn--sm { height: 32px; }
+.cds-btn--md { height: 40px; }
+.cds-btn--lg { height: 48px; }
+
+/* Toolbar buttons sit in tight rows rather than Carbon's full-width
+   label-left layout, so the label centres and the 32px gap collapses. */
+.cds-btn--compact {
+  justify-content: center;
+  gap: 8px;
+  min-width: 0;
+  max-width: none;
+  white-space: nowrap;
+}
+
+.cds-btn:focus-visible {
+  outline: 2px solid var(--cds-focus);
+  outline-offset: -2px;
+}
+
+.cds-btn--primary {
+  background: var(--cds-button-primary);
+  color: var(--cds-text-on-color);
+}
+.cds-btn--primary:hover:not(:disabled) { background: var(--cds-button-primary-hover); }
+.cds-btn--primary:active:not(:disabled) { background: var(--cds-button-primary-active); }
+
+.cds-btn--ghost {
+  background: transparent;
+  color: var(--cds-link-primary);
+}
+.cds-btn--ghost:hover:not(:disabled) { background: var(--cds-background-hover); }
+.cds-btn--ghost:active:not(:disabled) { background: var(--cds-background-active); }
+
+.cds-btn--danger {
+  background: var(--cds-button-danger-primary);
+  color: var(--cds-text-on-color);
+}
+.cds-btn--danger:hover:not(:disabled) { background: var(--cds-button-danger-hover); }
+.cds-btn--danger:active:not(:disabled) { background: var(--cds-button-danger-active); }
+
+.cds-btn:disabled {
+  background: var(--cds-button-disabled);
+  color: var(--cds-text-on-color-disabled);
+  cursor: not-allowed;
+}
+.cds-btn--ghost:disabled {
+  background: transparent;
+  color: var(--cds-text-disabled);
+}
+
+/* ---- Tile ---------------------------------------------------------- */
+
+.cds-tile {
+  box-sizing: border-box;
+  background: var(--cds-layer-01);
+  color: var(--cds-text-primary);
+  border: 1px solid var(--cds-border-subtle-01);
+  padding: 16px;
+  font-family: var(--cds-font-sans);
+  font-size: 14px;
+  transition: background 110ms cubic-bezier(0.2, 0, 0.38, 0.9);
+}
+
+.cds-tile--clickable { cursor: pointer; }
+.cds-tile--clickable:hover { background: var(--cds-layer-hover-01); }
+.cds-tile--clickable:active { background: var(--cds-layer-active-01); }
+
+.cds-tile--clickable:focus-visible {
+  outline: 2px solid var(--cds-focus);
+  outline-offset: -2px;
+}
+
+/* The selected edge replaces the left border rather than adding to it, so
+   the tile's content box never shifts by 2px when selection changes. */
+.cds-tile--selected {
+  background: var(--cds-layer-selected-01);
+  border-left: 3px solid var(--cds-border-interactive);
+  padding-left: 14px;
+}
+
+.cds-tile--disabled {
+  color: var(--cds-text-disabled);
+  cursor: default;
+  background: var(--cds-layer-01);
+}
+.cds-tile--disabled .cds-icon { color: var(--cds-icon-disabled); }
+
+/* ---- Checkbox ------------------------------------------------------ */
+
+.cds-checkbox {
+  display: inline-flex;
+  align-items: flex-start;
+  gap: 8px;
+  cursor: pointer;
+  user-select: none;
+}
+.cds-checkbox--disabled { cursor: not-allowed; opacity: 0.5; }
+
+.cds-checkbox input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.cds-checkbox__box {
+  position: relative;
+  box-sizing: border-box;
+  flex-shrink: 0;
+  width: 16px;
+  height: 16px;
+  margin-top: 1px;
+  border: 1px solid var(--cds-icon-primary);
+  border-radius: 1px;
+  background: transparent;
+  transition: background 70ms cubic-bezier(0, 0, 0.38, 0.9);
+}
+
+.cds-checkbox input:checked + .cds-checkbox__box,
+.cds-checkbox input:indeterminate + .cds-checkbox__box {
+  background: var(--cds-icon-primary);
+  border-color: var(--cds-icon-primary);
+}
+
+/* Checkmark drawn as two borders rotated 45°, the way Carbon does it. */
+.cds-checkbox input:checked + .cds-checkbox__box::after {
+  content: '';
+  position: absolute;
+  top: 2px;
+  left: 5px;
+  width: 4px;
+  height: 8px;
+  border: solid var(--cds-icon-inverse);
+  border-width: 0 1.5px 1.5px 0;
+  transform: rotate(45deg);
+}
+
+.cds-checkbox input:indeterminate + .cds-checkbox__box::after {
+  content: '';
+  position: absolute;
+  top: 6px;
+  left: 2px;
+  width: 10px;
+  height: 2px;
+  background: var(--cds-icon-inverse);
+}
+
+.cds-checkbox input:focus-visible + .cds-checkbox__box {
+  outline: 2px solid var(--cds-focus);
+  outline-offset: 1px;
+}
+
+.cds-checkbox__label {
+  font-size: 14px;
+  line-height: 1.28572;
+  letter-spacing: 0.16px;
+  color: var(--cds-text-primary);
+}
+
+/* ---- Radio --------------------------------------------------------- */
+
+.cds-radio {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  user-select: none;
+}
+
+.cds-radio input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  border: 0;
+}
+
+.cds-radio__circle {
+  position: relative;
+  box-sizing: border-box;
+  flex-shrink: 0;
+  width: 16px;
+  height: 16px;
+  border: 1px solid var(--cds-icon-primary);
+  border-radius: 50%;
+}
+
+.cds-radio input:checked + .cds-radio__circle {
+  border-color: var(--cds-border-interactive);
+}
+
+.cds-radio input:checked + .cds-radio__circle::after {
+  content: '';
+  position: absolute;
+  inset: 2px;
+  border-radius: 50%;
+  background: var(--cds-border-interactive);
+}
+
+.cds-radio input:focus-visible + .cds-radio__circle {
+  outline: 2px solid var(--cds-focus);
+  outline-offset: 1px;
+}
+
+.cds-radio__label {
+  font-size: 14px;
+  line-height: 1.28572;
+  letter-spacing: 0.16px;
+  color: var(--cds-text-primary);
+}
+
+/* ---- Toggle -------------------------------------------------------- */
+
+.cds-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
+  user-select: none;
+}
+
+.cds-toggle input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  border: 0;
+}
+
+.cds-toggle__track {
+  position: relative;
+  flex-shrink: 0;
+  width: 32px;
+  height: 16px;
+  border-radius: 8px;
+  background: var(--cds-toggle-off);
+  transition: background 110ms cubic-bezier(0.2, 0, 0.38, 0.9);
+}
+
+.cds-toggle__knob {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--cds-icon-on-color);
+  transition: transform 110ms cubic-bezier(0.2, 0, 0.38, 0.9);
+}
+
+.cds-toggle input:checked + .cds-toggle__track {
+  background: var(--cds-support-success);
+}
+.cds-toggle input:checked + .cds-toggle__track .cds-toggle__knob {
+  transform: translateX(16px);
+}
+
+.cds-toggle input:focus-visible + .cds-toggle__track {
+  outline: 2px solid var(--cds-focus);
+  outline-offset: 2px;
+}
+
+.cds-toggle__label {
+  font-size: 14px;
+  line-height: 1.28572;
+  letter-spacing: 0.16px;
+  color: var(--cds-text-primary);
+}
+
+/* ---- Field shared (TextInput, Select) ------------------------------ */
+
+.cds-field { display: block; }
+
+.cds-field__label {
+  display: block;
+  margin-bottom: 6px;
+  font-size: 12px;
+  line-height: 1.33333;
+  letter-spacing: 0.32px;
+  color: var(--cds-text-secondary);
+}
+
+.cds-field__input,
+.cds-field__select {
+  box-sizing: border-box;
+  width: 100%;
+  height: 40px;
+  padding: 0 16px;
+  border: none;
+  border-bottom: 1px solid var(--cds-border-strong-01);
+  border-radius: 0;
+  background: var(--cds-field-01);
+  color: var(--cds-text-primary);
+  font-family: var(--cds-font-sans);
+  font-size: 14px;
+  letter-spacing: 0.16px;
+  transition: background 70ms cubic-bezier(0, 0, 0.38, 0.9);
+}
+
+.cds-field__input::placeholder { color: var(--cds-text-placeholder); }
+.cds-field__input:hover,
+.cds-field__select:hover { background: var(--cds-field-hover-01); }
+
+.cds-field__input:focus,
+.cds-field__select:focus {
+  outline: 2px solid var(--cds-focus);
+  outline-offset: -2px;
+}
+
+.cds-field__select-wrap { position: relative; }
+
+.cds-field__select {
+  appearance: none;
+  padding-right: 40px;
+  cursor: pointer;
+}
+
+.cds-field__chevron {
+  position: absolute;
+  top: 50%;
+  right: 12px;
+  transform: translateY(-50%);
+  pointer-events: none;
+  color: var(--cds-icon-primary);
+}
+
+/* ---- Tag ----------------------------------------------------------- */
+
+.cds-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  height: 18px;
+  padding: 0 8px;
+  border-radius: 9px;
+  font-family: var(--cds-font-sans);
+  font-size: 12px;
+  line-height: 1;
+  letter-spacing: 0.32px;
+  white-space: nowrap;
+}
+
+.cds-tag--md { height: 24px; padding: 0 12px; border-radius: 12px; font-size: 14px; }
+
+.cds-tag--blue { background: var(--cds-blue-20); color: var(--cds-blue-70); }
+.cds-tag--red { background: var(--cds-red-20); color: var(--cds-red-70); }
+.cds-tag--green { background: var(--cds-green-20); color: var(--cds-green-70); }
+.cds-tag--gray { background: var(--cds-gray-20); color: var(--cds-gray-100); }
+
+[data-carbon-theme='g100'] .cds-tag--blue { background: var(--cds-blue-80); color: var(--cds-blue-20); }
+[data-carbon-theme='g100'] .cds-tag--red { background: var(--cds-red-80); color: var(--cds-red-20); }
+[data-carbon-theme='g100'] .cds-tag--green { background: var(--cds-green-80); color: var(--cds-green-20); }
+[data-carbon-theme='g100'] .cds-tag--gray { background: var(--cds-gray-70); color: var(--cds-gray-10); }
+
+/* ---- InlineNotification -------------------------------------------- */
+
+.cds-notification {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 14px 16px;
+  background: var(--cds-layer-01);
+  border-left: 3px solid var(--cds-support-info);
+  color: var(--cds-text-primary);
+  font-size: 14px;
+  line-height: 1.28572;
+}
+
+.cds-notification--error { border-left-color: var(--cds-support-error); }
+.cds-notification--error .cds-notification__icon { color: var(--cds-support-error); }
+.cds-notification--warning { border-left-color: var(--cds-support-warning); }
+.cds-notification--warning .cds-notification__icon { color: var(--cds-support-warning); }
+.cds-notification--success { border-left-color: var(--cds-support-success); }
+.cds-notification--success .cds-notification__icon { color: var(--cds-support-success); }
+
+.cds-notification__icon { flex-shrink: 0; margin-top: 1px; color: var(--cds-support-info); }
+.cds-notification__title { font-weight: 600; }
+.cds-notification__body { color: var(--cds-text-secondary); margin-top: 2px; }
+
+/* ---- Progress bar --------------------------------------------------- */
+
+.cds-progress__track {
+  width: 100%;
+  height: 8px;
+  background: var(--cds-layer-accent-01);
+  overflow: hidden;
+}
+
+.cds-progress__fill {
+  height: 100%;
+  background: var(--cds-interactive);
+  transition: width 120ms linear;
+}

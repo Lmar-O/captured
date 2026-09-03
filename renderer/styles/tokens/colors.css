@@ -1,0 +1,155 @@
+/* ============================================================
+   Carbon color palette — the full @carbon/colors swatch set.
+   Source: carbon-design-system/carbon · packages/colors/src/colors.ts
+   These are the raw, theme-agnostic values. Semantic tokens
+   (background, text, layer, …) reference these — see theme.css.
+   ============================================================ */
+:root {
+  /* Black & White */
+  --cds-black-100: #000000;
+  --cds-white-0: #ffffff;
+
+  /* Blue — the IBM signature hue; blue-60 (#0f62fe) is the interactive/brand color */
+  --cds-blue-10: #edf5ff;
+  --cds-blue-20: #d0e2ff;
+  --cds-blue-30: #a6c8ff;
+  --cds-blue-40: #78a9ff;
+  --cds-blue-50: #4589ff;
+  --cds-blue-60: #0f62fe;
+  --cds-blue-70: #0043ce;
+  --cds-blue-80: #002d9c;
+  --cds-blue-90: #001d6c;
+  --cds-blue-100: #001141;
+
+  /* Gray — the neutral workhorse scale */
+  --cds-gray-10: #f4f4f4;
+  --cds-gray-20: #e0e0e0;
+  --cds-gray-30: #c6c6c6;
+  --cds-gray-40: #a8a8a8;
+  --cds-gray-50: #8d8d8d;
+  --cds-gray-60: #6f6f6f;
+  --cds-gray-70: #525252;
+  --cds-gray-80: #393939;
+  --cds-gray-90: #262626;
+  --cds-gray-100: #161616;
+
+  /* Cool gray */
+  --cds-cool-gray-10: #f2f4f8;
+  --cds-cool-gray-20: #dde1e6;
+  --cds-cool-gray-30: #c1c7cd;
+  --cds-cool-gray-40: #a2a9b0;
+  --cds-cool-gray-50: #878d96;
+  --cds-cool-gray-60: #697077;
+  --cds-cool-gray-70: #4d5358;
+  --cds-cool-gray-80: #343a3f;
+  --cds-cool-gray-90: #21272a;
+  --cds-cool-gray-100: #121619;
+
+  /* Warm gray */
+  --cds-warm-gray-10: #f7f3f2;
+  --cds-warm-gray-20: #e5e0df;
+  --cds-warm-gray-30: #cac5c4;
+  --cds-warm-gray-40: #ada8a8;
+  --cds-warm-gray-50: #8f8b8b;
+  --cds-warm-gray-60: #726e6e;
+  --cds-warm-gray-70: #565151;
+  --cds-warm-gray-80: #3c3838;
+  --cds-warm-gray-90: #272525;
+  --cds-warm-gray-100: #171414;
+
+  /* Red */
+  --cds-red-10: #fff1f1;
+  --cds-red-20: #ffd7d9;
+  --cds-red-30: #ffb3b8;
+  --cds-red-40: #ff8389;
+  --cds-red-50: #fa4d56;
+  --cds-red-60: #da1e28;
+  --cds-red-70: #a2191f;
+  --cds-red-80: #750e13;
+  --cds-red-90: #520408;
+  --cds-red-100: #2d0709;
+
+  /* Orange */
+  --cds-orange-10: #fff2e8;
+  --cds-orange-20: #ffd9be;
+  --cds-orange-30: #ffb784;
+  --cds-orange-40: #ff832b;
+  --cds-orange-50: #eb6200;
+  --cds-orange-60: #ba4e00;
+  --cds-orange-70: #8a3800;
+  --cds-orange-80: #5e2900;
+  --cds-orange-90: #3e1a00;
+  --cds-orange-100: #231000;
+
+  /* Yellow */
+  --cds-yellow-10: #fcf4d6;
+  --cds-yellow-20: #fddc69;
+  --cds-yellow-30: #f1c21b;
+  --cds-yellow-40: #d2a106;
+  --cds-yellow-50: #b28600;
+  --cds-yellow-60: #8e6a00;
+  --cds-yellow-70: #684e00;
+  --cds-yellow-80: #483700;
+  --cds-yellow-90: #302400;
+  --cds-yellow-100: #1c1500;
+
+  /* Green */
+  --cds-green-10: #defbe6;
+  --cds-green-20: #a7f0ba;
+  --cds-green-30: #6fdc8c;
+  --cds-green-40: #42be65;
+  --cds-green-50: #24a148;
+  --cds-green-60: #198038;
+  --cds-green-70: #0e6027;
+  --cds-green-80: #044317;
+  --cds-green-90: #022d0d;
+  --cds-green-100: #071908;
+
+  /* Teal */
+  --cds-teal-10: #d9fbfb;
+  --cds-teal-20: #9ef0f0;
+  --cds-teal-30: #3ddbd9;
+  --cds-teal-40: #08bdba;
+  --cds-teal-50: #009d9a;
+  --cds-teal-60: #007d79;
+  --cds-teal-70: #005d5d;
+  --cds-teal-80: #004144;
+  --cds-teal-90: #022b30;
+  --cds-teal-100: #081a1c;
+
+  /* Cyan */
+  --cds-cyan-10: #e5f6ff;
+  --cds-cyan-20: #bae6ff;
+  --cds-cyan-30: #82cfff;
+  --cds-cyan-40: #33b1ff;
+  --cds-cyan-50: #1192e8;
+  --cds-cyan-60: #0072c3;
+  --cds-cyan-70: #00539a;
+  --cds-cyan-80: #003a6d;
+  --cds-cyan-90: #012749;
+  --cds-cyan-100: #061727;
+
+  /* Purple */
+  --cds-purple-10: #f6f2ff;
+  --cds-purple-20: #e8daff;
+  --cds-purple-30: #d4bbff;
+  --cds-purple-40: #be95ff;
+  --cds-purple-50: #a56eff;
+  --cds-purple-60: #8a3ffc;
+  --cds-purple-70: #6929c4;
+  --cds-purple-80: #491d8b;
+  --cds-purple-90: #31135e;
+  --cds-purple-100: #1c0f30;
+
+  /* Magenta */
+  --cds-magenta-10: #fff0f7;
+  --cds-magenta-20: #ffd6e8;
+  --cds-magenta-30: #ffafd2;
+  --cds-magenta-40: #ff7eb6;
+  --cds-magenta-50: #ee5396;
+  --cds-magenta-60: #d02670;
+  --cds-magenta-70: #9f1853;
+  --cds-magenta-80: #740937;
+  --cds-magenta-90: #510224;
+  --cds-magenta-100: #2a0a18;
+}

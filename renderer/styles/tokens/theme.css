@@ -1,0 +1,239 @@
+/* ============================================================
+   Carbon semantic theme tokens.
+   Default :root = "White" theme (the canonical Carbon light theme).
+   [data-carbon-theme="g100"] = the g100 dark theme.
+   Source: carbon-design-system/carbon · packages/themes/src/{white,g100}.ts
+   Apply a theme by setting data-carbon-theme on <html> or any container.
+   ============================================================ */
+:root,
+[data-carbon-theme="white"] {
+  color-scheme: light;
+
+  /* Background */
+  --cds-background: #ffffff;
+  --cds-background-inverse: #393939;
+  --cds-background-brand: #0f62fe;
+  --cds-background-active: rgba(141, 141, 141, 0.5);
+  --cds-background-hover: rgba(141, 141, 141, 0.12);
+  --cds-background-inverse-hover: #474747;
+  --cds-background-selected: rgba(141, 141, 141, 0.2);
+  --cds-background-selected-hover: rgba(141, 141, 141, 0.32);
+
+  /* Layer — stacking surfaces. layer-01 sits on background, layer-02 on layer-01, etc. */
+  --cds-layer-01: #f4f4f4;
+  --cds-layer-02: #ffffff;
+  --cds-layer-03: #f4f4f4;
+  --cds-layer-hover-01: #e8e8e8;
+  --cds-layer-hover-02: #e8e8e8;
+  --cds-layer-hover-03: #e8e8e8;
+  --cds-layer-active-01: #c6c6c6;
+  --cds-layer-active-02: #c6c6c6;
+  --cds-layer-selected-01: #e0e0e0;
+  --cds-layer-selected-02: #e0e0e0;
+  --cds-layer-selected-hover-01: #d1d1d1;
+  --cds-layer-selected-inverse: #161616;
+  --cds-layer-selected-disabled: #8d8d8d;
+  --cds-layer-accent-01: #e0e0e0;
+  --cds-layer-accent-hover-01: #d1d1d1;
+  --cds-layer-accent-active-01: #a8a8a8;
+
+  /* Field — input backgrounds */
+  --cds-field-01: #f4f4f4;
+  --cds-field-02: #ffffff;
+  --cds-field-hover-01: #e8e8e8;
+  --cds-field-hover-02: #e8e8e8;
+
+  /* Border */
+  --cds-border-subtle-00: #e0e0e0;
+  --cds-border-subtle-01: #c6c6c6;
+  --cds-border-subtle-02: #e0e0e0;
+  --cds-border-subtle-selected-01: #c6c6c6;
+  --cds-border-strong-01: #8d8d8d;
+  --cds-border-strong-02: #8d8d8d;
+  --cds-border-tile-01: #c6c6c6;
+  --cds-border-inverse: #161616;
+  --cds-border-interactive: #0f62fe;
+  --cds-border-disabled: #c6c6c6;
+
+  /* Text */
+  --cds-text-primary: #161616;
+  --cds-text-secondary: #525252;
+  --cds-text-placeholder: rgba(22, 22, 22, 0.4);
+  --cds-text-helper: #6f6f6f;
+  --cds-text-error: #da1e28;
+  --cds-text-inverse: #ffffff;
+  --cds-text-on-color: #ffffff;
+  --cds-text-on-color-disabled: #8d8d8d;
+  --cds-text-disabled: rgba(22, 22, 22, 0.25);
+
+  /* Link */
+  --cds-link-primary: #0f62fe;
+  --cds-link-primary-hover: #0043ce;
+  --cds-link-secondary: #0043ce;
+  --cds-link-inverse: #78a9ff;
+  --cds-link-visited: #8a3ffc;
+
+  /* Icon */
+  --cds-icon-primary: #161616;
+  --cds-icon-secondary: #525252;
+  --cds-icon-inverse: #ffffff;
+  --cds-icon-on-color: #ffffff;
+  --cds-icon-disabled: rgba(22, 22, 22, 0.25);
+  --cds-icon-interactive: #0f62fe;
+
+  /* Support / status */
+  --cds-support-error: #da1e28;
+  --cds-support-success: #24a148;
+  --cds-support-warning: #f1c21b;
+  --cds-support-info: #0043ce;
+  --cds-support-caution-major: #ff832b;
+  --cds-support-caution-minor: #f1c21b;
+
+  /* Focus */
+  --cds-focus: #0f62fe;
+  --cds-focus-inset: #ffffff;
+  --cds-focus-inverse: #ffffff;
+
+  /* Misc */
+  --cds-interactive: #0f62fe;
+  --cds-highlight: #d0e2ff;
+  --cds-overlay: rgba(0, 0, 0, 0.6);
+  --cds-toggle-off: #8d8d8d;
+  --cds-skeleton-background: #e8e8e8;
+  --cds-skeleton-element: #c6c6c6;
+
+  /* Button component tokens */
+  --cds-button-primary: #0f62fe;
+  --cds-button-primary-hover: #0050e6;
+  --cds-button-primary-active: #002d9c;
+  --cds-button-secondary: #393939;
+  --cds-button-secondary-hover: #474747;
+  --cds-button-secondary-active: #6f6f6f;
+  --cds-button-tertiary: #0f62fe;
+  --cds-button-tertiary-hover: #0050e6;
+  --cds-button-tertiary-active: #002d9c;
+  --cds-button-danger-primary: #da1e28;
+  --cds-button-danger-secondary: #da1e28;
+  --cds-button-danger-hover: #b81921;
+  --cds-button-danger-active: #750e13;
+  --cds-button-disabled: #c6c6c6;
+  --cds-button-separator: #e0e0e0;
+
+  /* AI / chat (experimental Carbon for AI tokens, light) */
+  --cds-ai-aura-start: rgba(69, 137, 255, 0.1);
+  --cds-ai-aura-end: rgba(255, 255, 255, 0);
+  --cds-ai-border-strong: #4589ff;
+  --cds-chat-bubble-user: #e0e0e0;
+  --cds-chat-bubble-agent: #ffffff;
+  --cds-chat-bubble-border: #e0e0e0;
+}
+
+[data-carbon-theme="g100"] {
+  color-scheme: dark;
+
+  --cds-background: #161616;
+  --cds-background-inverse: #f4f4f4;
+  --cds-background-brand: #0f62fe;
+  --cds-background-active: rgba(141, 141, 141, 0.4);
+  --cds-background-hover: rgba(141, 141, 141, 0.16);
+  --cds-background-inverse-hover: #e8e8e8;
+  --cds-background-selected: rgba(141, 141, 141, 0.24);
+  --cds-background-selected-hover: rgba(141, 141, 141, 0.32);
+
+  --cds-layer-01: #262626;
+  --cds-layer-02: #393939;
+  --cds-layer-03: #525252;
+  --cds-layer-hover-01: #333333;
+  --cds-layer-hover-02: #474747;
+  --cds-layer-hover-03: #636363;
+  --cds-layer-active-01: #525252;
+  --cds-layer-active-02: #6f6f6f;
+  --cds-layer-selected-01: #393939;
+  --cds-layer-selected-02: #525252;
+  --cds-layer-selected-hover-01: #474747;
+  --cds-layer-selected-inverse: #f4f4f4;
+  --cds-layer-selected-disabled: #a8a8a8;
+  --cds-layer-accent-01: #393939;
+  --cds-layer-accent-hover-01: #474747;
+  --cds-layer-accent-active-01: #6f6f6f;
+
+  --cds-field-01: #262626;
+  --cds-field-02: #393939;
+  --cds-field-hover-01: #333333;
+  --cds-field-hover-02: #474747;
+
+  --cds-border-subtle-00: #393939;
+  --cds-border-subtle-01: #525252;
+  --cds-border-subtle-02: #6f6f6f;
+  --cds-border-subtle-selected-01: #6f6f6f;
+  --cds-border-strong-01: #6f6f6f;
+  --cds-border-strong-02: #8d8d8d;
+  --cds-border-tile-01: #525252;
+  --cds-border-inverse: #f4f4f4;
+  --cds-border-interactive: #4589ff;
+  --cds-border-disabled: rgba(141, 141, 141, 0.5);
+
+  --cds-text-primary: #f4f4f4;
+  --cds-text-secondary: #c6c6c6;
+  --cds-text-placeholder: rgba(244, 244, 244, 0.4);
+  --cds-text-helper: #a8a8a8;
+  --cds-text-error: #ff8389;
+  --cds-text-inverse: #161616;
+  --cds-text-on-color: #ffffff;
+  --cds-text-on-color-disabled: rgba(255, 255, 255, 0.25);
+  --cds-text-disabled: rgba(244, 244, 244, 0.25);
+
+  --cds-link-primary: #78a9ff;
+  --cds-link-primary-hover: #a6c8ff;
+  --cds-link-secondary: #a6c8ff;
+  --cds-link-inverse: #0f62fe;
+  --cds-link-visited: #be95ff;
+
+  --cds-icon-primary: #f4f4f4;
+  --cds-icon-secondary: #c6c6c6;
+  --cds-icon-inverse: #161616;
+  --cds-icon-on-color: #ffffff;
+  --cds-icon-disabled: rgba(244, 244, 244, 0.25);
+  --cds-icon-interactive: #ffffff;
+
+  --cds-support-error: #fa4d56;
+  --cds-support-success: #42be65;
+  --cds-support-warning: #f1c21b;
+  --cds-support-info: #4589ff;
+  --cds-support-caution-major: #ff832b;
+  --cds-support-caution-minor: #f1c21b;
+
+  --cds-focus: #ffffff;
+  --cds-focus-inset: #161616;
+  --cds-focus-inverse: #0f62fe;
+
+  --cds-interactive: #4589ff;
+  --cds-highlight: #001d6c;
+  --cds-overlay: rgba(0, 0, 0, 0.6);
+  --cds-toggle-off: #6f6f6f;
+  --cds-skeleton-background: #292929;
+  --cds-skeleton-element: #393939;
+
+  --cds-button-primary: #0f62fe;
+  --cds-button-primary-hover: #0050e6;
+  --cds-button-primary-active: #002d9c;
+  --cds-button-secondary: #6f6f6f;
+  --cds-button-secondary-hover: #5e5e5e;
+  --cds-button-secondary-active: #393939;
+  --cds-button-tertiary: #ffffff;
+  --cds-button-tertiary-hover: #f4f4f4;
+  --cds-button-tertiary-active: #c6c6c6;
+  --cds-button-danger-primary: #da1e28;
+  --cds-button-danger-secondary: #fa4d56;
+  --cds-button-danger-hover: #b81921;
+  --cds-button-danger-active: #750e13;
+  --cds-button-disabled: rgba(141, 141, 141, 0.3);
+  --cds-button-separator: #161616;
+
+  --cds-ai-aura-start: rgba(69, 137, 255, 0.1);
+  --cds-ai-aura-end: rgba(0, 0, 0, 0);
+  --cds-ai-border-strong: #78a9ff;
+  --cds-chat-bubble-user: #393939;
+  --cds-chat-bubble-agent: #262626;
+  --cds-chat-bubble-border: #525252;
+}

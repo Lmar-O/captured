@@ -1,0 +1,11 @@
+/* IBM Plex — the official Carbon typeface family.
+   Loaded from Google Fonts (IBM's official distribution channel for Plex).
+   Weights: Light 300, Regular 400, SemiBold 600 (the three Carbon uses) + 700 for marketing.
+
+   Captured note: this is the one asset the app fetches from the network. It
+   is cached by Chromium after first launch, and typography.css falls through
+   to the macOS system font meanwhile, so the app is fully usable offline —
+   it just renders in San Francisco instead of Plex until the face arrives.
+   To make the app entirely self-contained, drop the woff2 files into
+   renderer/styles/fonts/ and swap this @import for local @font-face rules. */
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:wght@300;400;500;600;700&family=IBM+Plex+Serif:wght@300;400;600&display=swap');

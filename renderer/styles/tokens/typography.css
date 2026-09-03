@@ -1,0 +1,55 @@
+/* ============================================================
+   Carbon typography — IBM Plex type system.
+   Source: carbon-design-system/carbon · packages/type/src/*
+   Type scale steps (px): 12 14 16 18 20 24 28 32 36 42 48 54 60 68 76 84 92 102 ...
+   Three weights only: Light 300 · Regular 400 · SemiBold 600.
+
+   Captured note: the fallback stacks matter more here than on the web —
+   the app must stay legible before IBM Plex has loaded, and offline, so
+   every family falls through to a macOS system face.
+   ============================================================ */
+:root {
+  /* Font families */
+  --cds-font-sans: 'IBM Plex Sans', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  --cds-font-serif: 'IBM Plex Serif', Georgia, Times, serif;
+  --cds-font-mono: 'IBM Plex Mono', Menlo, 'DejaVu Sans Mono', Courier, monospace;
+
+  /* Font weights */
+  --cds-font-weight-light: 300;
+  --cds-font-weight-regular: 400;
+  --cds-font-weight-semibold: 600;
+}
+
+/* Apply IBM Plex Sans globally as the default body font */
+body {
+  font-family: var(--cds-font-sans);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+/* ---- Productive type set (UI text) ---- */
+.cds--type-code-01 { font-family: var(--cds-font-mono); font-size: 0.75rem; font-weight: 400; line-height: 1.33333; letter-spacing: 0.32px; }
+.cds--type-code-02 { font-family: var(--cds-font-mono); font-size: 0.875rem; font-weight: 400; line-height: 1.42857; letter-spacing: 0.32px; }
+
+.cds--type-label-01 { font-size: 0.75rem; font-weight: 400; line-height: 1.33333; letter-spacing: 0.32px; }
+.cds--type-label-02 { font-size: 0.875rem; font-weight: 400; line-height: 1.28572; letter-spacing: 0.16px; }
+.cds--type-helper-text-01 { font-size: 0.75rem; font-weight: 400; line-height: 1.33333; letter-spacing: 0.32px; }
+.cds--type-helper-text-02 { font-size: 0.875rem; font-weight: 400; line-height: 1.28572; letter-spacing: 0.16px; }
+.cds--type-legal-01 { font-size: 0.75rem; font-weight: 400; line-height: 1.33333; letter-spacing: 0.32px; }
+.cds--type-legal-02 { font-size: 0.875rem; font-weight: 400; line-height: 1.28572; letter-spacing: 0.16px; }
+
+.cds--type-body-compact-01 { font-size: 0.875rem; font-weight: 400; line-height: 1.28572; letter-spacing: 0.16px; }
+.cds--type-body-compact-02 { font-size: 1rem; font-weight: 400; line-height: 1.375; letter-spacing: 0; }
+.cds--type-body-01 { font-size: 0.875rem; font-weight: 400; line-height: 1.42857; letter-spacing: 0.16px; }
+.cds--type-body-02 { font-size: 1rem; font-weight: 400; line-height: 1.5; letter-spacing: 0; }
+
+.cds--type-heading-compact-01 { font-size: 0.875rem; font-weight: 600; line-height: 1.28572; letter-spacing: 0.16px; }
+.cds--type-heading-compact-02 { font-size: 1rem; font-weight: 600; line-height: 1.375; letter-spacing: 0; }
+.cds--type-heading-01 { font-size: 0.875rem; font-weight: 600; line-height: 1.42857; letter-spacing: 0.16px; }
+.cds--type-heading-02 { font-size: 1rem; font-weight: 600; line-height: 1.5; letter-spacing: 0; }
+.cds--type-heading-03 { font-size: 1.25rem; font-weight: 400; line-height: 1.4; letter-spacing: 0; }
+.cds--type-heading-04 { font-size: 1.75rem; font-weight: 400; line-height: 1.28572; letter-spacing: 0; }
+.cds--type-heading-05 { font-size: 2rem; font-weight: 400; line-height: 1.25; letter-spacing: 0; }
+.cds--type-heading-06 { font-size: 2.625rem; font-weight: 300; line-height: 1.199; letter-spacing: 0; }
+.cds--type-heading-07 { font-size: 3.375rem; font-weight: 300; line-height: 1.199; letter-spacing: 0; }
