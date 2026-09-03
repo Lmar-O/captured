@@ -20,6 +20,16 @@ const path = require('node:path');
 exports.default = async function afterPack(context) {
   if (context.electronPlatformName !== 'darwin') return;
 
+  // A universal build packs each arch into its own *-temp directory and then
+  // merges them. @electron/universal requires every non-binary file to match
+  // across the two slices, and signing them separately makes their
+  // _CodeSignature/CodeResources diverge — the merge then fails outright.
+  // Skip the slices and sign the merged app, which afterPack also visits.
+  if (/-(x64|arm64)-temp\/?$/.test(context.appOutDir)) {
+    console.log(`  • skipping ad-hoc signature on ${path.basename(context.appOutDir)} (universal slice)`);
+    return;
+  }
+
   const appName = `${context.packager.appInfo.productFilename}.app`;
   const appPath = path.join(context.appOutDir, appName);
   const appId = context.packager.appInfo.id;
