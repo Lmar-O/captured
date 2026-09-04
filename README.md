@@ -2,7 +2,7 @@
 
 A macOS app for importing videos from an SD card to your computer.
 
-Pick a card on the left, review the clips in the middle, choose where they go on the right. Files can be sorted into dated folders automatically, and existing folders are reused rather than duplicated.
+Pick a card on the left, review the clips in the middle, choose where they go on the right. Files can be sorted into dated folders automatically, and existing folders are reused rather than duplicated. Clips can be renamed on the way in and labelled with the rate they were shot at, so `C1850.MP4` and its `C1850.XML` sidecar land as `C1850_120fps.MP4` and `C1850_120fps.XML`.
 
 ## Install
 

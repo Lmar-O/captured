@@ -9,6 +9,7 @@ const { listVolumes } = require('./lib/volumes');
 const { scanSource, markDuplicates } = require('./lib/scan');
 const { planImport, runImport, freeSpace } = require('./lib/importer');
 const { ThumbnailCache } = require('./lib/thumbs');
+const { attachFramerates } = require('./lib/framerate');
 const { DATE_FORMATS, DEFAULT_DATE_FORMAT } = require('./lib/dates');
 
 let win = null;
@@ -25,6 +26,7 @@ const DEFAULT_SETTINGS = {
   dateFormat: DEFAULT_DATE_FORMAT,
   renameEnabled: false,
   renameBase: '',
+  framerateSuffix: false,
   includeXml: true,
   skipDuplicates: true,
   includeSubfolders: true,
@@ -146,6 +148,11 @@ ipcMain.handle('scan:run', async (_event, { source, settings }) => {
   } catch (err) {
     return { error: err.message, files: [] };
   }
+
+  // Read every clip's frame rate before planning: it shows on the cards, and
+  // when the suffix option is on it is part of the filename each file lands
+  // under, which is what the duplicate check compares against.
+  await attachFramerates(files);
 
   if (settings.destination) {
     try {

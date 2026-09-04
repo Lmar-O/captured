@@ -26,6 +26,9 @@
     : d === 1 ? 'Yesterday — Sep 2, 2026' : 'Saturday, Aug 30, 2026');
   const key = (d) => (d === 0 ? '2026-09-03' : d === 1 ? '2026-09-02' : '2026-08-30');
 
+  // A card that shot a mix of rates, plus one clip nothing can read.
+  const FPS = ['120fps', '24fps', '60fps', '30fps', '120fps', null];
+
   const files = RAW.map(([name, days, mb, hasXml, duplicate], i) => ({
     id: `f${i + 1}`,
     name,
@@ -43,6 +46,7 @@
       : [],
     hasXml,
     duplicate,
+    fpsLabel: FPS[i % FPS.length],
   }));
 
   const settings = {
@@ -51,6 +55,7 @@
     dateFormat: 'YYYY/YYYY-MM-DD',
     renameEnabled: false,
     renameBase: '',
+    framerateSuffix: false,
     includeXml: true,
     skipDuplicates: true,
     includeSubfolders: true,
@@ -86,7 +91,8 @@
     planPreview: async (s) => ({
       duplicates: Object.fromEntries(files.map((f) => [f.id, f.duplicate])),
       examplePath: `${s.destination}${s.organizeMode === 'date' ? '/2026/2026-09-03' : ''}/`
-        + (s.renameEnabled && s.renameBase.trim() ? `${s.renameBase.trim()}_1.MP4` : 'DJI_0141.MP4'),
+        + (s.renameEnabled && s.renameBase.trim() ? `${s.renameBase.trim()}_1` : 'DJI_0141')
+        + (s.framerateSuffix ? '_120fps' : '') + '.MP4',
       existingDirs: [`${s.destination}/2026/2026-09-03`, `${s.destination}/2026/2026-09-02`],
       newDirs: [`${s.destination}/2026/2026-08-30`],
     }),

@@ -8,7 +8,7 @@
   "scripts": {
     "start": "electron .",
     "dist": "electron-builder --mac --publish never",
-    "test": "node --test test/dates.test.js test/import.test.js",
+    "test": "node --test test/dates.test.js test/import.test.js test/framerate.test.js",
     "preview": "node dev/build-preview.js && open dev/preview.html"
   },
   "devDependencies": {

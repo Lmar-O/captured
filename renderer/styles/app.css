@@ -416,6 +416,8 @@ a:hover { color: var(--cds-link-primary-hover); }
 
 .dest__rename { margin-top: 12px; }
 
+.dest__fps { margin-top: 16px; }
+
 .dest__rename-helper {
   font-size: 12px;
   font-family: var(--cds-font-mono);

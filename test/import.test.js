@@ -8,6 +8,7 @@ const test = require('node:test');
 
 const { scanSource, markDuplicates } = require('../electron/lib/scan');
 const { planImport, runImport } = require('../electron/lib/importer');
+const { attachFramerates } = require('../electron/lib/framerate');
 
 const SRC_A = '/System/Library/CoreServices/BluetoothUIService.app/Contents/Resources/Banner-PID-8203-Case-mov/Banner-PID-8203-Case-Loop.mov';
 const SRC_B = '/System/Library/CoreServices/NotificationCenter.app/Contents/Resources/mac_widgets-edu_RTL_full.mov';
@@ -220,6 +221,91 @@ test('renaming numbers the whole selection in shot order and renames sidecars to
   // Numbering runs across dates, so the earliest clip lands in the Aug 30 folder.
   assert.ok(listing.includes(path.join('2026', '2026-08-30', 'Japan_1.MP4')));
   assert.ok(listing.includes(path.join('2026', '2026-09-03', 'Japan_7.MP4')));
+});
+
+test('the frame rate suffix labels each clip and its sidecar', async () => {
+  const card = await makeCard();
+  const dest = await fsp.mkdtemp(path.join(os.tmpdir(), 'captured-dest-'));
+
+  const files = await scanSource(card, { recursive: true });
+  await attachFramerates(files);
+
+  // The fixture is built from real 60 fps QuickTime files.
+  assert.deepEqual([...new Set(files.map((f) => f.fpsLabel))], ['60fps']);
+
+  const result = await runImport(files, { ...baseSettings(dest), framerateSuffix: true });
+  assert.equal(result.failed.length, 0, JSON.stringify(result.failed));
+
+  const listing = await tree(dest);
+  assert.ok(listing.includes(path.join('2026', '2026-09-03', 'DJI_0141_60fps.MP4')));
+  assert.ok(
+    listing.includes(path.join('2026', '2026-09-03', 'DJI_0141_60fps.XML')),
+    'the sidecar keeps matching the clip it belongs to',
+  );
+  assert.equal(listing.filter((p) => p.endsWith('_60fps.MP4')).length, 7);
+});
+
+test('the frame rate rides on the end of a custom name', async () => {
+  const card = await makeCard();
+  const dest = await fsp.mkdtemp(path.join(os.tmpdir(), 'captured-dest-'));
+
+  const files = await scanSource(card, { recursive: true });
+  await attachFramerates(files);
+
+  await runImport(files, {
+    ...baseSettings(dest),
+    renameEnabled: true,
+    renameBase: 'Japan',
+    framerateSuffix: true,
+  });
+
+  const listing = await tree(dest);
+  assert.ok(listing.includes(path.join('2026', '2026-08-30', 'Japan_1_60fps.MP4')));
+  assert.ok(listing.includes(path.join('2026', '2026-08-30', 'Japan_1_60fps.XML')));
+  assert.ok(listing.includes(path.join('2026', '2026-09-03', 'Japan_7_60fps.MP4')));
+});
+
+test('a clip with no readable frame rate keeps its own name', async () => {
+  const card = await makeCard();
+  const dest = await fsp.mkdtemp(path.join(os.tmpdir(), 'captured-dest-'));
+
+  const files = await scanSource(card, { recursive: true });
+  await attachFramerates(files);
+
+  // Stand in for BRAW, R3D or AVCHD without a sidecar.
+  const unreadable = files.find((f) => f.name === 'DJI_0143.MP4');
+  unreadable.framerate = null;
+  unreadable.fpsLabel = null;
+
+  await runImport(files, { ...baseSettings(dest), framerateSuffix: true });
+
+  const listing = await tree(dest);
+  assert.ok(
+    listing.includes(path.join('2026', '2026-09-03', 'DJI_0143.MP4')),
+    'no suffix beats a guessed one',
+  );
+  assert.ok(listing.includes(path.join('2026', '2026-09-03', 'DJI_0141_60fps.MP4')));
+});
+
+test('re-importing a labelled file does not stack a second suffix', async () => {
+  const card = await makeCard();
+  const dest = await fsp.mkdtemp(path.join(os.tmpdir(), 'captured-dest-'));
+  const settings = { ...baseSettings(dest), framerateSuffix: true };
+
+  const files = await scanSource(card, { recursive: true });
+  await attachFramerates(files);
+  await runImport(files, settings);
+
+  // Import the destination back into a second folder, the way someone
+  // reorganising an archive would.
+  const again = await fsp.mkdtemp(path.join(os.tmpdir(), 'captured-dest-'));
+  const round2 = await scanSource(dest, { recursive: true });
+  await attachFramerates(round2);
+  await runImport(round2, { ...settings, destination: again });
+
+  const listing = await tree(again);
+  assert.ok(listing.includes(path.join('2026', '2026-09-03', 'DJI_0141_60fps.MP4')));
+  assert.equal(listing.filter((p) => p.includes('_60fps_60fps')).length, 0);
 });
 
 test('a same-named file of different content is parked beside, never overwritten', async () => {

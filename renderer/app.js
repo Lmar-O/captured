@@ -44,6 +44,13 @@ function fmtDuration(sec) {
   return `${m}:${String(s).padStart(2, '0')}`;
 }
 
+/** The line under a card's name: length, frame rate, size. */
+function metaLine(file) {
+  return [fmtDuration(state.durations.get(file.id)), file.fpsLabel, fmtSize(file.size)]
+    .filter(Boolean)
+    .join(' · ');
+}
+
 function fileUrl(p) {
   return `file://${p.split('/').map(encodeURIComponent).join('/')}`;
 }
@@ -220,8 +227,7 @@ function renderFiles() {
 function cardHtml(file, index) {
   const checked = state.selected.has(file.id);
   const hue = index % 5;
-  const duration = fmtDuration(state.durations.get(file.id));
-  const meta = [duration, fmtSize(file.size)].filter(Boolean).join(' · ');
+  const meta = metaLine(file);
   const showXml = file.hasXml && state.settings?.includeXml;
 
   return `
@@ -303,6 +309,10 @@ function syncSelectionUi() {
     box.indeterminate = !all && some;
   }
 
+  // Both naming hints read off the selection, so they follow it.
+  $('fps-helper').textContent = framerateHelp();
+  $('rename-helper').textContent = namingPreview();
+
   renderSummary();
   renderToolbar();
 }
@@ -367,10 +377,7 @@ function pumpDurations() {
       durationActive -= 1;
 
       const meta = document.querySelector(`[data-meta="${CSS.escape(id)}"]`);
-      if (meta) {
-        const label = fmtDuration(seconds);
-        meta.textContent = [label, fmtSize(file.size)].filter(Boolean).join(' · ');
-      }
+      if (meta) meta.textContent = metaLine(file);
       pumpDurations();
     };
 
@@ -409,15 +416,11 @@ function renderDestination() {
   $('opt-rename').checked = s.renameEnabled;
   $('rename-base').value = s.renameBase || '';
   $('rename-wrap').classList.toggle('hidden', !s.renameEnabled);
-  $('rename-note').classList.toggle('hidden', s.renameEnabled);
+  $('opt-fps').checked = s.framerateSuffix;
 
-  const base = (s.renameBase || '').trim();
-  // Show the extension the import will actually write — clips keep the
-  // spelling the camera used, so this is .MP4 on most cards, not .mp4.
-  const ext = selectedFiles()[0]?.ext || state.files[0]?.ext || '.MP4';
-  $('rename-helper').textContent = s.renameEnabled
-    ? (base ? `${base}_1${ext}, ${base}_2${ext}, ${base}_3${ext}…` : 'Enter a name to preview numbering')
-    : '';
+  $('fps-helper').textContent = framerateHelp();
+  $('rename-helper').textContent = namingPreview();
+  $('rename-note').classList.toggle('hidden', s.renameEnabled || s.framerateSuffix);
 
   $('opt-xml').checked = s.includeXml;
   $('opt-skip-dupes').checked = s.skipDuplicates;
@@ -428,6 +431,59 @@ function renderDestination() {
     : '';
 
   renderFolderPlan();
+}
+
+/**
+ * The names the import will actually write.
+ *
+ * The examples are the real first three clips rather than an invented
+ * pattern, because the two naming options interact: numbering follows shot
+ * order across every date folder, and each clip carries its own frame rate,
+ * so a preview that repeated one rate down the list would promise something
+ * the import will not do.
+ */
+function namingPreview() {
+  const s = state.settings;
+  if (!s.renameEnabled) return '';
+
+  const base = (s.renameBase || '').trim();
+  if (!base) return 'Enter a name to preview numbering';
+
+  const ordered = [...selectedFiles()].sort((a, b) => (
+    a.capturedAt === b.capturedAt
+      ? a.name.localeCompare(b.name, undefined, { numeric: true })
+      : a.capturedAt.localeCompare(b.capturedAt)
+  ));
+
+  // Nothing scanned yet: show the shape the numbering will take. Clips keep
+  // the spelling the camera used, so this is .MP4 on most cards, not .mp4.
+  if (!ordered.length) return `${base}_1.MP4, ${base}_2.MP4, ${base}_3.MP4…`;
+
+  const shown = ordered.slice(0, 3).map((f, i) => {
+    const fps = s.framerateSuffix && f.fpsLabel ? `_${f.fpsLabel}` : '';
+    return `${base}_${i + 1}${fps}${f.ext}`;
+  });
+
+  return shown.join(', ') + (ordered.length > shown.length ? '…' : '');
+}
+
+/**
+ * What the frame rate checkbox promises, and where it cannot deliver.
+ *
+ * Rates come out of the clip itself, so formats the parser cannot read
+ * (BRAW, R3D, AVCHD without a sidecar) get no suffix. Saying so up front
+ * beats letting the user discover a half-labelled folder afterwards.
+ */
+function framerateHelp() {
+  const unknown = selectedFiles().filter((f) => !f.fpsLabel).length;
+
+  if (!state.settings.framerateSuffix || !unknown) {
+    return 'e.g. C1850.MP4 and C1850.XML become C1850_120fps.MP4 and C1850_120fps.XML';
+  }
+
+  return `${unknown} selected file${unknown === 1 ? '' : 's'} `
+    + `${unknown === 1 ? 'has' : 'have'} no readable frame rate and will keep `
+    + `${unknown === 1 ? 'its' : 'their'} name${unknown === 1 ? '' : 's'}.`;
 }
 
 /**
@@ -729,6 +785,7 @@ function wire() {
 
   $('opt-rename').addEventListener('change', (e) => updateSettings({ renameEnabled: e.target.checked }));
   $('rename-base').addEventListener('input', (e) => updateSettings({ renameBase: e.target.value }));
+  $('opt-fps').addEventListener('change', (e) => updateSettings({ framerateSuffix: e.target.checked }));
 
   $('opt-xml').addEventListener('change', (e) => {
     updateSettings({ includeXml: e.target.checked });

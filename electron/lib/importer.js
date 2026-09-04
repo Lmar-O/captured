@@ -6,6 +6,7 @@ const path = require('node:path');
 const { pipeline } = require('node:stream/promises');
 
 const { dateSegments, resolveDatedDir } = require('./dates');
+const { stripFpsSuffix } = require('./framerate');
 
 /**
  * Work out where every selected file lands, without touching the disk.
@@ -26,6 +27,7 @@ async function planImport(files, settings, { create = false, resolveCollisions =
     dateFormat,
     renameEnabled = false,
     renameBase = '',
+    framerateSuffix = false,
     includeXml = true,
   } = settings;
 
@@ -57,7 +59,7 @@ async function planImport(files, settings, { create = false, resolveCollisions =
       createdDirs.push(...resolved.created);
     }
 
-    const stem = useRename ? `${base}_${index + 1}` : file.base;
+    const stem = fileStem(file, useRename ? `${base}_${index + 1}` : file.base, framerateSuffix);
     const name = resolveCollisions
       ? await claimName(dir, stem, file.ext, claimed)
       : `${stem}${file.ext}`;
@@ -78,6 +80,20 @@ async function planImport(files, settings, { create = false, resolveCollisions =
   }
 
   return { targets, createdDirs };
+}
+
+/**
+ * Apply the frame rate suffix, so C1850.MP4 lands as C1850_120fps.MP4 and its
+ * XML sidecar follows it.
+ *
+ * A clip whose rate could not be read keeps its plain name — a wrong number
+ * in a filename is worse than no number. Any suffix already on the stem is
+ * dropped first, so re-importing footage this app has named once does not
+ * grow C1850_120fps_120fps.
+ */
+function fileStem(file, stem, framerateSuffix) {
+  if (!framerateSuffix || !file.fpsLabel) return stem;
+  return `${stripFpsSuffix(stem)}_${file.fpsLabel}`;
 }
 
 /**
